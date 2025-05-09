@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 from binance import Client
 from typing import Optional
+from dotenv import load_dotenv
 
 class BinanceETL:
     """
@@ -23,8 +24,8 @@ class BinanceETL:
     """
 
     def __init__(self,
-                 api_key: str = os.getenv('BINANCE_API_KEY'),
-                 api_secret: str = os.getenv('BINANCE_SECRET_KEY'),
+                 api_key: str = None,
+                 api_secret: str = None,
                  tld: str = 'us'):
         """
         Initialize the BinanceETL instance and establish connection to Binance API.
@@ -38,11 +39,17 @@ class BinanceETL:
             EnvironmentError: If API credentials are not provided and not found in environment variables.
             ConnectionError: If connection to the Binance API fails.
         """
+        # Load environment variables if not provided
+        if api_key is None or api_secret is None:
+            load_dotenv()
+            api_key = os.getenv('BINANCE_API_KEY')
+            api_secret = os.getenv('BINANCE_SECRET_KEY')
+
         self.build_binance(api_key, api_secret, tld)
 
     def build_binance(self,
-                     api_key: str = os.getenv('BINANCE_API_KEY'),
-                     api_secret: str = os.getenv('BINANCE_SECRET_KEY'),
+                     api_key: str,
+                     api_secret: str,
                      tld: str = 'us') -> None:
         """
         Initializes the Binance API client using API credentials.
@@ -194,7 +201,7 @@ class BinanceETL:
         # Add identifying columns
         df["ticker"] = "BTC/USDT"
         df["exchange"] = "Binance"
-        df["trade"] = 1
+        
 
         # Reset index
         df.reset_index(drop=True, inplace=True)
@@ -262,6 +269,6 @@ class BinanceETL:
             safe_filename = csv.replace('/', '_')
             cleaned_df.to_csv(os.path.join('Data', f'{safe_filename}.csv'), index=False)
 
-        print(f'ETL process completed for {ticker} at {interval} interval')
+        print(f'OHLCV data for {ticker} at {interval} interval has been processed.')
         return cleaned_df
 

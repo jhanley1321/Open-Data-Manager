@@ -1,0 +1,41 @@
+# c:\Data_Tools\Open_Data_Manager\.gitignore
+
+# Ignore environment variables file
+.env
+
+# Ignore Python virtual environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore Jupyter Notebook files
+.ipynb_checkpoints/
+
+# Ignore Docker build cache
+.dockerenv
+.dockerignore
+
+# Ignore IDE and editor files
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+*.log
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore data files
+Data/  
