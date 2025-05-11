@@ -272,3 +272,61 @@ class BinanceETL:
         print(f'OHLCV data for {ticker} at {interval} interval has been processed.')
         return cleaned_df
 
+    def wrangle_ohlcv(self, df1: pd.DataFrame, col1: str, df2: pd.DataFrame, col2: str, join: str = 'inner', csv: Optional[str] = None) -> pd.DataFrame:
+        """
+        Updates the values in df1 based on the matching values in df2 by merging the DataFrames.
+
+        Args:
+        df1 (pd.DataFrame): The DataFrame to be updated.
+        col1 (str): The column in df1 that needs to be updated.
+        df2 (pd.DataFrame): The DataFrame containing the values to swap with.
+        col2 (str): The column in df2 that contains the values to swap with.
+        join (str): The type of join to perform (default is 'inner').
+        csv (Optional[str]): The name of the CSV file to write the resulting DataFrame to. If None, no file is written.
+        columns (Optional[list]): The list of columns to include in the final DataFrame. If None, all columns are included.
+
+        Returns:
+        pd.DataFrame: The updated DataFrame.
+        """
+        # Ensure the specified columns exist in the DataFrames
+        if col1 not in df1.columns:
+            raise KeyError(f"Column '{col1}' not found in df1")
+        if col2 not in df2.columns:
+            raise KeyError(f"Column '{col2}' not found in df2")
+
+        # Print the columns of both DataFrames for debugging
+        print("Columns in df1:", df1.columns)
+        print("Columns in df2:", df2.columns)
+
+        # Ensure the data types of the merge columns are the same
+        df1[col1] = df1[col1].astype(str)
+        df2[col2] = df2[col2].astype(str)
+
+        # Merge the DataFrames on the specified key with a left join
+        merged_df = pd.merge(df1, df2, left_on=col1, right_on=col2, how=join)
+
+        # Drop the key column from the merged DataFrame to avoid duplication
+        if col2 != col1:
+            merged_df.drop(columns=[col2], inplace=True)
+
+        # Ensure the 'date' column is in the proper date format
+        if 'date' in merged_df.columns:
+            merged_df['date'] = pd.to_datetime(merged_df['date']).dt.date
+
+        # Select and order the columns if specified
+        columns = ['ticker_id', 'exchange_id', 'date', 'open', 'high', 'low', 'close', 'volume']
+        merged_df = merged_df[columns]
+
+        # Print the resulting DataFrame for debugging
+        print("Merged DataFrame:")
+        print(merged_df)
+
+        # Write the resulting DataFrame to a CSV file if a filename is provided
+        if csv:
+            data_folder = os.path.join(os.getcwd(), 'Data')
+            os.makedirs(data_folder, exist_ok=True)
+            csv_path = os.path.join(data_folder, csv)
+            merged_df.to_csv(csv_path, index=False)
+            print(f"DataFrame written to {csv_path}")
+
+        return merged_df

@@ -3,13 +3,14 @@ Manages ETL of data
 
 # WIP
 This is not quite ready for release yet, I still have a few bugs to fix and features to implment before it can be deployed.
-However, there's still plenty that you can learn from. 
+However, there's still plenty that you can learn from. The ETL scripts for Binance work just fine and you shouldn't have issues if you use MS SQL as your database. 
 
 
 # Features
 * Pull OHLCV data, including data cleaning and ETL process
 * Support for Binanace Exchange
-* Support for any SQL database
+* Support for PSQL and Timescale DB (you can connect any other SQL database you prefer)
+* Load SQL querires directly into Pandas DataFrames 
 
 
 # Feature Road Map

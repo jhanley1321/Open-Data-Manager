@@ -24,19 +24,15 @@ def main():
     sql = SQLManager()
 
     # Read the ticker lookup table from the database and convert it into a DataFrame
-    df_ticker_table = sql.sql_to_df(query = 'SELECT * FROM public.vw_ticker_lookup')
+    df_tickers = sql.sql_to_df(query = 'SELECT * FROM public.vw_ticker_lookup')
 
 
     # Convert the exchange lookup table from the database and convert it into a DataFrame
-    df_exchange_table = sql.sql_to_df(query = 'SELECT * FROM public.vw_exchange_lookup')
+    df_exchanges = sql.sql_to_df(query = 'SELECT * FROM public.vw_exchange_lookup')
     
   
 
-    # Merge the Dataframes together 
-    df_ohlcv_ticker = sql.wrangle_df(df1 = df_crypto, col1='ticker', df2=df_ticker_table, col2='ticker_symbol',join='inner')
-    columns = ['ticker_id', 'exchange_id', 'date', 'open', 'high', 'low', 'close', 'volume']
-    df_ohlcv_ticker_exchange = sql.wrangle_df(df1 = df_ohlcv_ticker, col1='exchange', df2=df_exchange_table, col2='exchange_name', columns=columns)
-    print(df_ohlcv_ticker_exchange)
+
   
 
 
@@ -46,21 +42,46 @@ def main():
 
 def main(): 
     import pandas as pd
-    data = {
-            'exchange_name': ['Coinbase'],
-            'active' : [True]
-                    }
-    df = pd.DataFrame(data)
-
-    print(df)
-    sql = SQLManager()
-    df = sql.sql_to_df(table_name='exchanges',schema='public')
-    print(df)
+    ass = {'asset_type_name' : ['Stock Options'] }
+    exc = { 'exchange_name': ['Gemini'] ,
+            'active': [True] }
+    tick = {'ticker_symbol': ['ETH/USDT'],
+            'ticker_name': ['Ethereum'],
+            'asset_type_id': [1] ,
+            'exchange_id': [1], 
+            'trading' : [True] }
+    df_ass = pd.DataFrame(ass)
+    # print(df_ass)
+    df_exc = pd.DataFrame(exc)
+    # print(df_exc)
+    df_tick = pd.DataFrame(tick)
     
-    sql.df_to_sql(df=df, table_name='exchange',schema='public')
+    print(df_tick)
 
-    df = sql.sql_to_df(table_name='exchanges',schema='public')
-    print(df)
+    
+    sql = SQLManager()
+    
+    
+    # Asset Types (working)
+    # sql.insert_df_to_sql(df=df_ass, table_name='asset_types',schema='public')
+    # sql.read_sql_to_df(table_name='asset_types',schema='public')
+    
+
+
+
+
+   # Exchanges (workign now )
+    # sql.insert_df_to_sql(df=df_exc, table_name='exchanges',schema='public')
+    # sql.read_sql_to_df(table_name='exchanges',schema='public')
+   
+    
+   
+    
+    # Tickers (Working now )
+    sql.insert_df_to_sql(df=df_tick, table_name='tickers', schema='public')
+    sql.read_sql_to_df( table_name='tickers', schema='public')
+
+
     
  
 
