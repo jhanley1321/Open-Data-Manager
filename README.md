@@ -2,7 +2,7 @@
 Manages ETL of data 
 
 # WIP
-This is not quite ready for release yet, I still have a few bugs to fix and features to implment before it can be deployed.
+This is not quite ready for release yet, All major bugs known major bugs are now fixed. I would still say things are not yet ready for production. 
 However, there's still plenty that you can learn from. The ETL scripts for Binance work just fine and you shouldn't have issues if you use MS SQL as your database. 
 
 
@@ -21,6 +21,7 @@ However, there's still plenty that you can learn from. The ETL scripts for Binan
 * Add support for Redis for caching
 * Add Airflow integration for ETL and scheudling
 * Add docker container
+* Higher speed batch inserts 
 
 
 # Conventional Commit Types

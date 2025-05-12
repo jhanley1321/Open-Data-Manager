@@ -1,149 +1,19 @@
+
 import os
 from datetime import datetime, timedelta
 import pandas as pd
 from binance import Client
 from typing import Optional
-from dotenv import load_dotenv
 
-class BinanceETL:
-    """
-    A class to handle ETL (Extract, Transform, Load) operations for Binance cryptocurrency data.
 
-    This class provides functionality to:
-    - Connect to the Binance API
-    - Retrieve historical cryptocurrency price data
-    - Clean and format the data
-    - Save the data to CSV files
 
-    Attributes:
-        api_key (str): Binance API key
-        api_secret (str): Binance API secret
-        client (Client): Binance API client instance
-        coin_df (pd.DataFrame): Raw cryptocurrency price data
-        cleaned_df (pd.DataFrame): Cleaned cryptocurrency price data
-    """
-
-    def __init__(self,
-                 api_key: str = None,
-                 api_secret: str = None,
-                 tld: str = 'us'):
-        """
-        Initialize the BinanceETL instance and establish connection to Binance API.
-
-        Args:
-            api_key (str): The Binance API key. Defaults to BINANCE_API_KEY environment variable.
-            api_secret (str): The Binance API secret. Defaults to BINANCE_SECRET_KEY environment variable.
-            tld (str): Top-level domain for the Binance API. Defaults to 'us' for Binance US.
-
-        Raises:
-            EnvironmentError: If API credentials are not provided and not found in environment variables.
-            ConnectionError: If connection to the Binance API fails.
-        """
-        # Load environment variables if not provided
-        if api_key is None or api_secret is None:
-            load_dotenv()
-            api_key = os.getenv('BINANCE_API_KEY')
-            api_secret = os.getenv('BINANCE_SECRET_KEY')
-
-        self.build_binance(api_key, api_secret, tld)
-
-    def build_binance(self,
-                     api_key: str,
-                     api_secret: str,
-                     tld: str = 'us') -> None:
-        """
-        Initializes the Binance API client using API credentials.
-
-        Args:
-            api_key (str): The Binance API key. Defaults to BINANCE_API_KEY environment variable.
-            api_secret (str): The Binance API secret. Defaults to BINANCE_SECRET_KEY environment variable.
-            tld (str): Top-level domain for the Binance API. Defaults to 'us' for Binance US.
-
-        Raises:
-            EnvironmentError: If API credentials are not provided and not found in environment variables.
-            ConnectionError: If connection to the Binance API fails.
-        """
-        self.api_key = api_key
-        self.api_secret = api_secret
-
-        # Validate credentials
-        if not api_key or not api_secret:
-            raise EnvironmentError("Binance API credentials not found. Please set BINANCE_API_KEY and BINANCE_SECRET_KEY environment variables or provide them as arguments.")
-
-        # Initialize client
-        self.client = Client(api_key=api_key, api_secret=api_secret, tld=tld)
-
-        # Test connection
-        try:
-            self.client.ping()
-            print('Connected to Binance API')
-        except Exception as e:
-            raise ConnectionError(f"Failed to connect to Binance API: {str(e)}")
-
-    def get_ohlcv(self,
-                      ticker: str = 'BTCUSDT',
-                      interval: str = '1d',
-                      start_date: str = '5 years ago UTC',
-                      save_as_attribute: bool = True) -> Optional[pd.DataFrame]:
-        """
-        Retrieves historical price data for a cryptocurrency from Binance.
-
-        Args:
-            ticker (str): The trading pair symbol (e.g., 'BTCUSDT'). Defaults to 'BTCUSDT'.
-            interval (str): The candlestick interval (e.g., '1d', '1h', '15m'). Defaults to '1d'.
-            start_date (str): The start date for historical data. Defaults to '5 years ago UTC'.
-            save_as_attribute (bool): Whether to save the DataFrame as an attribute. Defaults to True.
-
-        Returns:
-            Optional[pd.DataFrame]: DataFrame containing historical price data, or None if no data is retrieved.
-
-        Raises:
-            AttributeError: If called before establishing a connection with build_binance().
-            ValueError: If the provided ticker or interval is invalid.
-        """
-        try:
-            # Retrieve historical price data
-            klines = self.client.get_historical_klines(ticker, interval, start_date)
-
-            # Check if data was returned
-            if not klines:
-                print("No data returned. Please check the ticker, interval, and start_date.")
-                return None
-
-            # Convert to DataFrame
-            df = pd.DataFrame(klines, columns=[
-                'timestamp', 'open', 'high', 'low', 'close', 'volume',
-                'close_time', 'quote_asset_volume', 'number_of_trades',
-                'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 'ignore'
-            ])
-
-            # Convert numeric columns to float
-            for col in ['open', 'high', 'low', 'close', 'volume']:
-                df[col] = df[col].astype(float)
-
-            # Convert timestamp to datetime
-            df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
-
-            # Set timestamp as index
-            df.set_index('timestamp', inplace=True)
-
-            # Drop unused columns
-            df.drop(columns=[
-                'close_time', 'quote_asset_volume', 'number_of_trades',
-                'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 'ignore'
-            ], inplace=True)
-
-            # Optionally store as an attribute
-            if save_as_attribute:
-                self.coin_df = df
-
-            print(f'Binance data retrieved for {ticker} at {interval} interval')
-            return df
-
-        except Exception as e:
-            print(f"Error retrieving data: {str(e)}")
-            return None
-
+class BinanceTransform():
+    
+    def __init__(self):
+        print("BinanceTransform initialized")
+        
+    
+    
     def clean_ohlcv(self,
                         price: Optional[bool] = None,
                         df: Optional[pd.DataFrame] = None,
@@ -154,7 +24,7 @@ class BinanceETL:
         Args:
             price (Optional[bool]): If True, returns only date and close price columns.
                                    If None, returns all OHLCV columns. Defaults to None.
-            df (Optional[pd.DataFrame]): The DataFrame to clean. If None, tries to use self.coin_df or self.df.
+            df (Optional[pd.DataFrame]): The DataFrame to clean. If None, tries to use self.df_ohlcv or self.df.
                                         Defaults to None.
             csv (Optional[str]): If provided, saves the cleaned DataFrame to a CSV file with this name.
                                 Defaults to None.
@@ -167,14 +37,13 @@ class BinanceETL:
         Raises:
             ValueError: If no DataFrame is provided and no DataFrame is stored as an attribute.
         """
+        print("Cleaning OHLCV data...")
         # Get the DataFrame to work with
+        # Remove this check and require a dataframe 
         if df is None:
-            if hasattr(self, 'coin_df'):
-                df = self.coin_df
-            elif hasattr(self, 'df'):
-                df = self.df
-            else:
-                raise ValueError("No DataFrame provided and no DataFrame stored as attribute (coin_df or df)")
+            df = self.df_ohlcv
+        else:
+            raise ValueError("No DataFrame provided and no DataFrame stored as attribute (df_ohlcv or df)")
 
         # Create a copy to avoid modifying the original
         df = df.copy()
@@ -207,12 +76,10 @@ class BinanceETL:
         df.reset_index(drop=True, inplace=True)
 
         # Store as attribute
-        self.cleaned_df = df
+        self.df_ohlcv_cleaned = df
         print('Binance Data Cleaned')
-        print(df.head(3))
-        print(df.tail(3))
-
         return df
+
 
     def get_ohlcv_clean(self,
                     ticker: str = 'BTCUSDT',
