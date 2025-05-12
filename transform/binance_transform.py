@@ -9,8 +9,10 @@ from typing import Optional
 
 class BinanceTransform():
     
-    def __init__(self):
+    def __init__(self, manager=None):
+        self.manager = manager
         print("BinanceTransform initialized")
+        
         
     
     
@@ -40,8 +42,13 @@ class BinanceTransform():
         print("Cleaning OHLCV data...")
         # Get the DataFrame to work with
         # Remove this check and require a dataframe 
+        if self.manager is None or self.manager.df_ohlcv is None:
+            raise ValueError("No data available. Run get_ohlcv first.")
+
+        
+        # Get the DataFrame from the manager if not provided
         if df is None:
-            df = self.df_ohlcv
+            df = self.manager.df_ohlcv
         else:
             raise ValueError("No DataFrame provided and no DataFrame stored as attribute (df_ohlcv or df)")
 
@@ -76,7 +83,7 @@ class BinanceTransform():
         df.reset_index(drop=True, inplace=True)
 
         # Store as attribute
-        self.df_ohlcv_cleaned = df
+        self.manager.df_ohlcv = df
         print('Binance Data Cleaned')
         return df
 

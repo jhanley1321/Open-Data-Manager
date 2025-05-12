@@ -14,10 +14,13 @@ def main():
     # crypto = BinanceETL()
     crypto = DataManager()
     crypto.get_ohlcv() # temp
-    # crypto.clean_ohlcv() # temp
+    # print(crypto.df_ohlcv)
+ 
+    crypto.clean_ohlcv() # temp
+    print(crypto.df_ohlcv)
     # crypto.get_ohlcv_clean() # temp
     # crypto.
-    # print(crypto.df_ohlcv)
+   
    
   
     
@@ -33,6 +36,8 @@ def main():
     # # Convert the exchange lookup table from the database and convert it into a DataFrame
     # df_exchanges = sql.sql_to_df(query = 'SELECT * FROM public.vw_exchange_lookup')
     
+
+    # crypto.run()
   
 
   
@@ -41,7 +46,7 @@ def main():
 
 
     
-
+# Saving for later 
 # def main(): 
 #     import pandas as pd
 #     ass = {'asset_type_name' : ['Stock Options'] }

@@ -22,6 +22,7 @@ However, there's still plenty that you can learn from. The ETL scripts for Binan
 * Add Airflow integration for ETL and scheudling
 * Add docker container
 * Higher speed batch inserts 
+* Dedciated Keys/password manager 
 
 
 # Conventional Commit Types
