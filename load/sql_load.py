@@ -5,13 +5,17 @@ from typing import Optional, Dict, Any
 
 
 class SQLLoader:
-    def __init__(self, host: str = 'localhost', port: int = 5432, database: str = 'postgres', username: str = 'postgres', password_env_var: str = 'POSTGRESQL_PASSWORD'):
+    def __init__(self, host: str = 'localhost', port: int = 5432, 
+                database: str = 'postgres', username: str = 'postgres',
+                 password_env_var: str = 'POSTGRESQL_PASSWORD',
+                 manager=None):
+        self.manager = manager
         self.host = host
         self.port = port
         self.database = database
         self.username = username
         self.password = os.getenv(password_env_var)
-
+    
         # PostgreSQL connection string using psycopg2
         self.connection_url = f'postgresql+psycopg2://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}'
         self.engine = create_engine(self.connection_url)
@@ -39,10 +43,13 @@ class SQLLoader:
   
 
     def read_sql_to_df(self, table_name, schema=None, **kwargs):
+        print('Fetching SQL query to DataFrame...')
         with self.engine.connect() as connection:
-            self.df = pd.read_sql_table(table_name, con=connection, schema=schema)
-        print(self.df.head(10))
-        return self.df
+            df = pd.read_sql_table(table_name, con=connection, schema=schema)
+        # print(df.head(10))
+        if self.manager is not None:
+            self.manager.df_sql = df
+        return df
 
 
 
@@ -52,7 +59,9 @@ class SQLLoader:
 
     def insert_df_to_sql(self, df=None, index = False,  schema='crypto', table_name='ohlcv_daily', if_exists='append', **kwargs):
         if df is None:
-            print("No data frame seleceted")
+            df = self.manager.df_ohlcv_wrangled
+            print(df)
+            
             
         # add check to ensure that the shemcma does exist , BEFORE it can write to the table 
 
@@ -62,4 +71,5 @@ class SQLLoader:
        
         df.to_sql(table_name, schema=schema, con=self.engine, if_exists=if_exists, index=index)
         print("Data inserted successfully.")
+    
 

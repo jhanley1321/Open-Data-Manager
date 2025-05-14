@@ -11,15 +11,12 @@ load_dotenv()
 
 def main():
     # Load the crypto class and the crypto
-    # crypto = BinanceETL()
     crypto = DataManager()
     crypto.get_ohlcv() # temp
-    # print(crypto.df_ohlcv)
- 
     crypto.clean_ohlcv() # temp
-    print(crypto.df_ohlcv)
-    # crypto.get_ohlcv_clean() # temp
-    # crypto.
+    # print(crypto.df_ohlcv)
+    # crypto.get_ohlcv_clean() # meeds fixing 
+   
    
    
   
@@ -29,12 +26,12 @@ def main():
 
     # Read the ticker lookup table from the database and convert it into a DataFrame
   
-    # sql.read_sql_to_df(table_name='vw_ticker_lookup',schema='public')
+    crypto.read_sql_to_df(table_name='vw_exchange_ticker_asset_lookup', schema='public')
+    crypto.wrangle_ohlcv()
+    crypto.insert_df_to_sql()
     
 
 
-    # # Convert the exchange lookup table from the database and convert it into a DataFrame
-    # df_exchanges = sql.sql_to_df(query = 'SELECT * FROM public.vw_exchange_lookup')
     
 
     # crypto.run()
