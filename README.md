@@ -3,7 +3,7 @@ Manages ETL of data
 
 # WIP
 This is not quite ready for release yet, All major bugs known major bugs are now fixed. I would still say things are not yet ready for production. 
-However, there's still plenty that you can learn from. The ETL scripts for Binance work just fine and you shouldn't have issues if you use MS SQL as your database. 
+However, there's still plenty that you can learn from. The ETL scripts for Binance work just fine and you shouldn't have issues if you use the default database set up. 
 
 
 # Features
@@ -19,7 +19,8 @@ However, there's still plenty that you can learn from. The ETL scripts for Binan
 * Add support for streaming data from websockets
 * Add support for Kakfa for streaming
 * Add support for Redis for caching
-* Add Airflow integration for ETL and scheudling
+* Add Airflow integration for ETL and scheduling
+* Add DBT support for data warehousing pipelines
 * Add docker container
 * Higher speed batch inserts 
 * Dedciated Keys/password manager 
