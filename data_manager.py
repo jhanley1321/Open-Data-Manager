@@ -1,6 +1,6 @@
-from extract.binance_extract import BinanceExtractor
-from transform.binance_transform import BinanceTransform
-from load.sql_load import SQLLoader
+from etl.binance_extract import BinanceExtractor
+from etl.binance_transform import BinanceTransform
+from sql.sql_load import SQLLoader
 
 
 

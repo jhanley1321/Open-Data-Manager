@@ -12,8 +12,8 @@ load_dotenv()
 def main():
     # Load the crypto class and the crypto
     crypto = DataManager()
-    crypto.get_ohlcv() # temp
-    crypto.clean_ohlcv() # temp
+    # crypto.get_ohlcv() # temp
+    # crypto.clean_ohlcv() # temp
     # print(crypto.df_ohlcv)
     # crypto.get_ohlcv_clean() # meeds fixing 
    
@@ -27,8 +27,8 @@ def main():
     # Read the ticker lookup table from the database and convert it into a DataFrame
   
     crypto.read_sql_to_df(table_name='vw_exchange_ticker_asset_lookup', schema='public')
-    crypto.wrangle_ohlcv()
-    crypto.insert_df_to_sql()
+    # crypto.wrangle_ohlcv()
+    # crypto.insert_df_to_sql() # off for resting right now
     
 
 

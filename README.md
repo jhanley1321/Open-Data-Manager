@@ -6,24 +6,32 @@ This is not quite ready for release yet, All major bugs known major bugs are now
 However, there's still plenty that you can learn from. The ETL scripts for Binance work just fine and you shouldn't have issues if you use the default database set up. 
 
 
+# How To Use
+Run the .bat files to run the script in one command
+```
+.\run-open-data-Manager.bat
+```
+
+
 # Features
 * Pull OHLCV data, including data cleaning and ETL process
-* Support for Binanace Exchange
+* Support for Binance Exchange
 * Support for PSQL and Timescale DB (you can connect any other SQL database you prefer)
-* Load SQL querires directly into Pandas DataFrames 
+* Load SQL queries directly into Pandas DataFrames 
+* Partial Support for Google Trends data 
 
 
 # Feature Road Map
 * Add more crytpo exchanges using CCXT
-* Add Alpaca Markets for stock trading (support for other stock platfroms must be done individually)
-* Add support for streaming data from websockets
-* Add support for Kakfa for streaming
+* Add Alpaca Markets for stock trading (support for other stock platforms must be done individually)
+* Add support for streaming data from web sockets
+* Add support for Kafka for streaming
 * Add support for Redis for caching
 * Add Airflow integration for ETL and scheduling
 * Add DBT support for data warehousing pipelines
 * Add docker container
 * Higher speed batch inserts 
-* Dedciated Keys/password manager 
+* Dedicated Keys/password manager 
 
 
 # Conventional Commit Types

@@ -147,10 +147,6 @@ class BinanceTransform():
         return cleaned_df
 
 
-
-
-
-
     def wrangle_ohlcv(self, df_ohlcv=None, col_ohlcv=None, df_sql=None, col_sql=None, join='inner'):
         
         if df_ohlcv is None:
